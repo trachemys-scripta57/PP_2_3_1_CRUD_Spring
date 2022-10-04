@@ -9,26 +9,7 @@ import java.util.List;
 
 @Component
 public class UserDAO {
-    private static int PEOPLE_COUNT;
 
-    private static final String URL = "jdbc:postgresql://localhost:5432/CRUD_Spring_231";
-    private static final String USERNAME = "postgres";
-    private static final String PASS = "root";
-
-    private static Connection connection;
-
-    static {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASS);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
 
     public List<User> index() {
         List<User> users = new ArrayList<>();
