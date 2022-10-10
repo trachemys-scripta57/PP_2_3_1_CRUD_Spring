@@ -1,6 +1,10 @@
 package ru.banana.DAO;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.banana.models.User;
 
 import java.sql.*;
@@ -10,49 +14,46 @@ import java.util.List;
 @Component
 public class UserDAO {
 
+    private final SessionFactory sessionFactory;
 
+    @Autowired
+    public UserDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    @Transactional(readOnly = true)
     public List<User> index() {
-        List<User> users = new ArrayList<>();
+        Session session = sessionFactory.getCurrentSession();
 
-        try {
-            Statement statement = connection.createStatement();
-            String SQL = "select * from user";
-            ResultSet resultSet = statement.executeQuery(SQL);
-
-            while (resultSet.next()) {
-                User user = new User();
-
-                user.setId(resultSet.getInt("id"));
-                user.setName(resultSet.getString("name"));
-                user.setAge(resultSet.getInt("age"));
-                user.setEmail(resultSet.getString("email"));
-
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return users;
+        return session.createQuery("select p from User p", User.class)
+                .getResultList();
     }
 
+    @Transactional(readOnly = true)
     public User show(int id) {
-        return null;
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(User.class, id);
     }
 
+    @Transactional(readOnly = true)
     public void save(User user) {
-        try {
-            Statement statement = connection.createStatement();
-            String SQL = "insert into person values(" + 1 + ", " + "'" + user.getName()
-                    + "', " + user.getAge() + ", '" + user.getEmail() + "')";
-            statement.executeUpdate(SQL);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Session session = sessionFactory.getCurrentSession();
+        session.save(user);
     }
 
+    @Transactional(readOnly = true)
     public void update(int id, User updatedUser) {
+        Session session = sessionFactory.getCurrentSession();
+        User userToBeUpdated = session.get(User.class, id);
+
+        userToBeUpdated.setName(updatedUser.getName());
+        userToBeUpdated.setAge(updatedUser.getAge());
+        userToBeUpdated.setEmail(updatedUser.getEmail());
     }
 
+    @Transactional
     public void delete(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        session.remove(session.get(User.class, id));
     }
 }
