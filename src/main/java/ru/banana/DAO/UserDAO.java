@@ -25,8 +25,9 @@ public class UserDAO {
     public List<User> index() {
         Session session = sessionFactory.getCurrentSession();
 
-        return session.createQuery("select p from User p", User.class)
+        List<User> users = session.createQuery("select p from User p", User.class)
                 .getResultList();
+        return users;
     }
 
     @Transactional(readOnly = true)
