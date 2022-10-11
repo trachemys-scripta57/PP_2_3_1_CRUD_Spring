@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.banana.models.User;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -25,9 +23,8 @@ public class UserDAO {
     public List<User> index() {
         Session session = sessionFactory.getCurrentSession();
 
-        List<User> users = session.createQuery("select p from User p", User.class)
+        return session.createQuery("select p from User p", User.class)
                 .getResultList();
-        return users;
     }
 
     @Transactional(readOnly = true)
@@ -36,13 +33,13 @@ public class UserDAO {
         return session.get(User.class, id);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void save(User user) {
         Session session = sessionFactory.getCurrentSession();
         session.save(user);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void update(int id, User updatedUser) {
         Session session = sessionFactory.getCurrentSession();
         User userToBeUpdated = session.get(User.class, id);

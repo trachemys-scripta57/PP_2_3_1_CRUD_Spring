@@ -1,30 +1,30 @@
 package ru.banana.models;
 
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Entity
-@Table(name="User")
+@Table(name = "\"User\"")
 public class User {
 
     @Id
-    @Column(name="id")
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotEmpty(message = "Поле Имя не может быть пустым")
     @Size(min = 2, max = 30, message = "Имя должно иметь от 2 до 30 символов")
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
     @Min(value = 0, message = "Возраст должен быть больше чем 0")
-    @Column(name="age")
+    @Max(value = 150, message = "Нужен возраст человека, а не баобаба")
+    @Column(name = "age")
     private int age;
 
-    @Column(name="email")
+    @Column(name = "email")
     @NotEmpty(message = "Поле email необходимо заполнить")
     @Email(message = "Введите действующий адрес")
     private String email;
