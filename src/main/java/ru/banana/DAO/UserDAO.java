@@ -1,57 +1,42 @@
 package ru.banana.DAO;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.banana.models.User;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Component
 public class UserDAO {
 
-    private final SessionFactory sessionFactory;
-
-    @Autowired
-    public UserDAO(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    @PersistenceContext
+    private EntityManager em;
 
     @Transactional(readOnly = true)
     public List<User> index() {
-        Session session = sessionFactory.getCurrentSession();
-
-        return session.createQuery("select p from User p", User.class)
+        return em.createQuery("select p from User p", User.class)
                 .getResultList();
     }
 
     @Transactional(readOnly = true)
     public User show(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        return session.get(User.class, id);
+        return em.find(User.class, id);
     }
 
     @Transactional
     public void save(User user) {
-        Session session = sessionFactory.getCurrentSession();
-        session.save(user);
+        em.persist(user);
     }
 
     @Transactional
     public void update(int id, User updatedUser) {
-        Session session = sessionFactory.getCurrentSession();
-        User userToBeUpdated = session.get(User.class, id);
-
-        userToBeUpdated.setName(updatedUser.getName());
-        userToBeUpdated.setAge(updatedUser.getAge());
-        userToBeUpdated.setEmail(updatedUser.getEmail());
+        em.merge(updatedUser);
     }
 
     @Transactional
     public void delete(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.remove(session.get(User.class, id));
+        em.remove(show(id));
     }
 }
