@@ -5,31 +5,30 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.banana.DAO.UserDAO;
 import ru.banana.models.User;
+import ru.banana.service.UserService;
 
 import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
-
-    private final UserDAO userDAO;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping()
     public String index(Model model) {
-        model.addAttribute("users", userDAO.index());
+        model.addAttribute("users", userService.index());
         return "users/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
-        model.addAttribute("user", userDAO.show(id));
+        model.addAttribute("user", userService.show(id));
         return "users/show";
     }
 
@@ -44,13 +43,13 @@ public class UserController {
         if (bindingResult.hasErrors())
             return "users/new";
 
-        userDAO.save(user);
+        userService.save(user);
         return "redirect:/users";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("user", userDAO.show(id));
+        model.addAttribute("user", userService.show(id));
         return "users/edit";
     }
 
@@ -61,13 +60,13 @@ public class UserController {
         if (bindingResult.hasErrors())
             return "users/edit";
 
-        userDAO.update(id, user);
+        userService.update(id, user);
         return "redirect:/users";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        userDAO.delete(id);
+        userService.delete(id);
         return "redirect:/users";
     }
 }

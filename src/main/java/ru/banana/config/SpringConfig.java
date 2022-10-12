@@ -9,8 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -35,7 +33,6 @@ import java.util.Properties;
 public class SpringConfig implements WebMvcConfigurer {
     private final ApplicationContext applicationContext;
     private final Environment env;
-
 
     @Autowired
     public SpringConfig(ApplicationContext applicationContext, Environment env) {
@@ -62,6 +59,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
         return templateEngine;
     }
+
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
@@ -104,6 +102,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
         return entityManagerFactoryBean;
     }
+
     @Bean
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
@@ -111,8 +110,9 @@ public class SpringConfig implements WebMvcConfigurer {
 
         return transactionManager;
     }
+
     @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 }
